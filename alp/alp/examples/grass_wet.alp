@@ -1,0 +1,18 @@
+grass_is_wet.
+sun_is_shining.
+grass_is_wet <- sprinkler_was_on.
+grass_is_wet <- it_rained_last_night.
+sprinkler_was_on <- sprinkler_broken, not it_rained_last_night.
+pipes_froze <- cold_last_night.
+sprinkler_was_on <- pipes_not_frozen, sprinkler_turned_on.
+pipes_not_frozen <- not pipes_frozen.
+sprinkler_turned_on <- not sprinkler_off.
+abducible(it_rained_last_night).
+abducible(sprinkler_broken).
+abducible(cold_last_night).
+abducible(sprinkler_off).
+abducible(sprinkler_turned_on).
+false <- it_rained_last_night, sun_is_shining.
+false <- cold_last_night, sun_is_shining.
+false <- sprinkler_was_on, it_rained_last_night.
+false <- sprinkler_turned_on, sprinkler_off.

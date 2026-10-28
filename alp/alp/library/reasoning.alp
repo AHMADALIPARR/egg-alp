@@ -1,0 +1,3 @@
+connected(X,Y) <- edge(X,Y).
+reachable(X,Y) <- edge(X,Y).
+reachable(X,Z) <- edge(X,Y), reachable(Y,Z).

@@ -1,0 +1,6 @@
+node(X).
+edge(X,Y).
+connected(X,Y) <- edge(X,Y).
+reachable(X,Y) <- edge(X,Y).
+reachable(X,Z) <- edge(X,Y), reachable(Y,Z).
+path(X,Y) <- reachable(X,Y).

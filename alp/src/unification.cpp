@@ -1,0 +1,11 @@
+#include "alp/unification.hpp"
+namespace alp {
+static Term deref(const Term&t,const Substitution&s){if(!t.is_variable())return t; if(auto*p=s.lookup(t.as_variable().name)) return deref(*p,s); return t;}
+bool Substitution::bind(const std::string&n,const Term&t){auto it=bindings_.find(n);if(it!=bindings_.end())return it->second==t;bindings_[n]=t;return true;} bool Substitution::contains(const std::string&n)const{return bindings_.contains(n);} const Term* Substitution::lookup(const std::string&n)const{auto i=bindings_.find(n);return i==bindings_.end()?nullptr:&i->second;}
+Term apply_substitution(const Term&t,const Substitution&s){Term d=deref(t,s);if(d.is_variable())return d;if(d.is_constant())return d;std::vector<Term>a;for(auto&p:d.as_compound().arguments)a.push_back(apply_substitution(*p,s));return Term::compound(d.as_compound().functor,std::move(a));}
+Atom apply_substitution(const Atom&a,const Substitution&s){Atom r=a;for(auto&x:r.arguments)x=apply_substitution(x,s);return r;}
+Substitution compose_substitution(const Substitution&a,const Substitution&b){Substitution r=b;for(auto&[n,t]:a.bindings())r.bind(n,apply_substitution(t,b));return r;}
+bool Unifier::occurs_check(const std::string&n,const Term&t,const Substitution&s){Term d=deref(t,s);if(d.is_variable())return d.as_variable().name==n;if(d.is_compound())for(auto&p:d.as_compound().arguments)if(occurs_check(n,*p,s))return true;return false;}
+bool Unifier::unify(const Term&aa,const Term&bb,Substitution&s){Term a=deref(aa,s),b=deref(bb,s);if(a==b)return true;if(a.is_variable()){if(occurs_check(a.as_variable().name,b,s))return false;return s.bind(a.as_variable().name,b);}if(b.is_variable()){if(occurs_check(b.as_variable().name,a,s))return false;return s.bind(b.as_variable().name,a);}if(a.is_constant()||b.is_constant())return false;auto&x=a.as_compound();auto&y=b.as_compound();if(x.functor!=y.functor||x.arguments.size()!=y.arguments.size())return false;for(size_t i=0;i<x.arguments.size();++i)if(!unify(*x.arguments[i],*y.arguments[i],s))return false;return true;}
+bool Unifier::unify(const Atom&a,const Atom&b,Substitution&s){if(a.predicate!=b.predicate)return false;for(size_t i=0;i<a.arguments.size();++i)if(!unify(a.arguments[i],b.arguments[i],s))return false;return true;}
+}

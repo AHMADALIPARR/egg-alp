@@ -1,0 +1,2 @@
+faulty(X) <- symptom(X), not healthy(X).
+abducible(healthy).

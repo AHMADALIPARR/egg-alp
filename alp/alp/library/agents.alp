@@ -1,0 +1,2 @@
+agent_ready(A) <- agent(A), goal(A,G), belief(A,B).
+can_execute(A,X) <- agent(A), action(A,X), permitted(A,X).
