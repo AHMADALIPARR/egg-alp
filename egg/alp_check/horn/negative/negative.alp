@@ -1,0 +1,62 @@
+% NEGATIVE TEST SET (deliberately violating). Loaded ON TOP of the real facts + contracts.
+% Every fact below is a violation the contracts MUST flag; the driver compares the flagged
+% constraint ids with the EXPECT-IC line and fails if any is not flagged ("the check bites").
+% None of these facts are data; they are synthetic test inputs and are never emitted by gen_facts.sh.
+% EXPECT-IC: dc_required_check_missing_or_not_pass dc_audit_check_failed dc_device_min_out_of_range dc_device_max_out_of_range dc_zero_imputation_signature dc_imputation_applied dc_first_valid_outside_utc_day dc_last_valid_outside_utc_day dc_unknown_device dc_source_tree_dirty dc_physical_without_provenance dc_synthetic_as_physical dc_second_csv_not_declared inv_nz_empty_valid_set inv_nz_empty_policy inv_entropy_as_bits inv_h1_requirement_unmet inv_h1_without_holdout inv_candidate_asserted_h1 tp_test_without_null tp_test_without_correction tp_reported_test_has_no_result tp_preregistration_unbacked tp_fixed_seed_missing cl_unclassified cl_status_not_allowed cl_status_without_claim cl_verified_and_hypothesis cl_verified_and_unverified cl_hypothesis_and_unverified cl_verified_without_evidence cl_verified_evidence_failed cl_verified_formal_proof cl_verified_replication cl_verified_scientific_hypothesis cl_verified_tool_absent cl_verified_depends_on_unrun_test cl_hypothesis_without_plan cl_unverified_without_reason cl_h1_verified_without_holdout pol_component_without_declared_kind pol_forbidden_runtime_kind pol_runtime_input_to_sampler pol_llm_text_hit_asserted pol_consciousness_claim_asserted pol_simulation_claim_asserted pol_forbidden_assertion pol_causal_without_observers pol_candidate_named_consciousness pol_no_proof_implies_consciousness pol_event_without_independent_source pol_event_synthetic pol_event_without_utc pol_event_count_nonzero pol_event_data_file_undeclared pol_observer_labels_in_csv
+
+% --- data contract violations
+required_check(neg_nonexistent_check).
+check_status(neg_fake_check,fail).
+dev_min(neg_dev,201).                 % 201 is outside 0..200
+dev_max(neg_dev,neg-1).               % negative count (opaque constant, not in count_domain)
+zero_imputation_signature(neg_dev).   % missing cells shown as zero
+imputation_applied(neg_zero_fill).
+dev_first_valid(neg_dev,946684799).   % one second before 2000-04-01... (not a listed in-day second)
+dev_last_valid(neg_dev,946771201).
+device_observed(neg_dev).             % device outside the spec list
+source_tree_status(dirty).
+synthetic_dataset(neg_synth).
+represented_as(neg_synth,physical_observation).
+data_csv_count(2).                    % an undeclared second CSV
+
+% --- invariants / test plan
+rowvalid(0,3).                        % three seconds with an empty valid set
+nz_empty_policy(neg_zero_fill).
+entropy_interpretation(neg_h,recoverable_bits).
+h1_established(neg_h1).               % no req_met, holdout absent
+asserted_h1(neg_cand).
+test(neg_t).
+test_reported(neg_t).
+preregistered(neg_t).
+stochastic_test(neg_t).
+
+% --- claims
+claim(neg_c0).                                  % no status
+status(neg_c1,bogus_status).                    % bad vocabulary, unregistered claim
+claim(neg_c2).
+status(neg_c2,verified). status(neg_c2,hypothesis). status(neg_c2,unverified).
+evidence(neg_c2,neg_ev_bogus).
+claim_kind(neg_c2,formal_proof). claim_kind(neg_c2,replication). claim_kind(neg_c2,scientific_hypothesis).
+requires_tool(neg_c2,neg_tool). tool_artifact_absent(neg_tool).
+uses_test(neg_c2,neg_t).
+claim(neg_c3).
+claim(neg_c4).
+status(neg_c3,hypothesis).            % no tests_claim / blocked_by
+status(neg_c4,unverified).            % no missing_evidence
+
+% --- claims policy
+runtime_component(neg_llm_gateway).
+component_kind(neg_agent_layer,agent_orchestration).
+data_flow(egg_data,llm_inference).
+policy_hit(neg_file_a,llm_or_agent_runtime,asserted).
+policy_hit(neg_file_b,consciousness_claim,asserted).
+policy_hit(neg_file_c,simulation_claim,asserted).
+asserts(neg_c2,consciousness_effect).
+claim_kind(neg_c5,causal_finding).
+candidate_label(neg_x,consciousness_effect).
+evidence_for(proof_of_code_property,simulation_detected).
+event_record(neg_ev1).
+synthetic_event(neg_ev1).
+event_record_count(3).
+event_data_file(neg_events_csv).
+observer_label(csv,neg_intention).

@@ -1,0 +1,51 @@
+% EGG-001 CLAIMS POLICY (spec: ABSOLUTE SCOPE, Q6/Q7, "Never call a discovered candidate 'consciousness effect'...").
+
+% ---- no LLM / agents / token sampling / model training in the research runtime
+runtime_kind(awk,deterministic_text_processing). runtime_kind(r,statistical_computation). runtime_kind(futhark,deterministic_array_kernels).
+runtime_kind(octave,numerical_reference). runtime_kind(elixir,deterministic_job_runner). runtime_kind(lean,proof_assistant).
+runtime_kind(dafny,program_verifier). runtime_kind(sas,statistical_crosscheck). runtime_kind(tsql,schema_definition).
+runtime_kind(ampl,optimization_model). runtime_kind(tests,test_scripts).
+forbidden_runtime_kind(llm_inference). forbidden_runtime_kind(agent_orchestration). forbidden_runtime_kind(token_sampling).
+forbidden_runtime_kind(model_training). forbidden_runtime_kind(generative_text_sampling).
+component_kind(C,K) <- runtime_kind(C,K).
+kind_known(C) <- component_kind(C,K).
+% IC pol_component_without_declared_kind: every directory in the runtime has a declared deterministic kind
+false <- runtime_component(C), not kind_known(C).
+% IC pol_forbidden_runtime_kind: no runtime component may be an LLM, agent layer, token sampler, trainer or text generator
+false <- component_kind(C,K), forbidden_runtime_kind(K).
+% IC pol_runtime_input_to_sampler: EGG data may not be fed to a language-model sampler
+false <- data_flow(egg_data,K), forbidden_runtime_kind(K).
+% IC pol_llm_text_hit_asserted: no unnegated mention of LLM/agent runtime in repo text/code (line heuristic)
+false <- policy_hit(F,llm_or_agent_runtime,asserted).
+% IC pol_consciousness_claim_asserted: no unnegated consciousness mention in repo text/code (line heuristic)
+false <- policy_hit(F,consciousness_claim,asserted).
+% IC pol_simulation_claim_asserted: no unnegated simulation-of-the-universe mention in repo text/code (line heuristic)
+false <- policy_hit(F,simulation_claim,asserted).
+
+% ---- forbidden assertions in the claim registry
+forbidden_assertion(consciousness_effect). forbidden_assertion(consciousness_controls_rng). forbidden_assertion(universe_is_simulated).
+forbidden_assertion(simulation_detected). forbidden_assertion(validated_correlation). forbidden_assertion(causal_finding).
+% IC pol_forbidden_assertion: no claim may assert a consciousness / simulation / validated-correlation / causal finding
+false <- asserts(C,K), forbidden_assertion(K).
+% IC pol_causal_without_observers: a causal-type claim needs independently sourced observer variables
+false <- claim_kind(C,causal_finding), not independent_observer_variables(C).
+% IC pol_candidate_named_consciousness: a discovered candidate is never labelled with a consciousness name
+false <- candidate_label(X,consciousness_effect).
+% IC pol_no_proof_implies_consciousness: proofs of code properties are not evidence about consciousness or simulation
+false <- evidence_for(proof_of_code_property,K), forbidden_assertion(K).
+
+% ---- no invented event data
+independent_source(external_utc_event_log). independent_source(external_sleep_lab_record).
+has_independent_source(E) <- event_source(E,S), independent_source(S).
+% IC pol_event_without_independent_source: an event/intention/dream record needs an independent, externally sourced UTC origin
+false <- event_record(E), not has_independent_source(E).
+% IC pol_event_synthetic: an event record may not be synthetic or invented
+false <- event_record(E), synthetic_event(E).
+% IC pol_event_without_utc: an event record carries an explicit UTC timestamp
+false <- event_record(E), not event_utc_stamped(E).
+% IC pol_event_count_nonzero: the repo currently contains no event/intention/dream data files
+false <- event_record_count(N), not is_zero(N).
+% IC pol_event_data_file_undeclared: a file that looks like event data must be declared with an independent source
+false <- event_data_file(F), not documented_event_source(F).
+% IC pol_observer_labels_in_csv: the historical CSV contains no observer labels; none may be attached
+false <- observer_label(csv,L).

@@ -1,0 +1,107 @@
+% EGG-001 DATA CONTRACT (spec: "DATA CONTRACTS AND AUDIT", "MATHEMATICAL DEFINITIONS" preamble)
+% Dialect notes (learned from alp/src/parser.cpp):
+%   - identifiers are [A-Za-z0-9_-]; Uppercase first letter = variable, otherwise constant (so 0, 200, 954547200 are constants)
+%   - no arithmetic, no comparison, no '.' inside tokens: <=, +, == are precomputed by egg/alp_check/gen_facts.sh
+%   - every integrity constraint is ONE line starting with "false <-", preceded by a "% IC <id>: ..." comment (the driver labels violations from it)
+%   - predicate names must not start with "not", "false" or "abducible" (the parser eats those prefixes)
+
+% ---------------------------------------------------------------- audit checks from awk_integrity.tsv
+required_check(meta_samples_per_record). required_check(meta_seconds_per_record). required_check(meta_records_per_packet).
+required_check(meta_trial_size). required_check(meta_eggs_reporting). required_check(meta_start_epoch). required_check(meta_end_epoch).
+required_check(meta_seconds_of_data). required_check(header_line_ok). required_check(devices). required_check(device_id_not_integer).
+required_check(device_id_duplicates). required_check(data_rows). required_check(time_gaps). required_check(time_duplicates).
+required_check(time_non_monotonic). required_check(bad_row_prefix). required_check(bad_field_count). required_check(bad_timestamp).
+required_check(cells_expected_capacity). required_check(cells_valid). required_check(cells_missing).
+required_check(cells_valid_plus_missing_eq_capacity). required_check(cells_not_integer_or_out_of_0_200). required_check(zero_imputed_cells).
+check_ok(K) <- check_status(K,pass).
+% IC dc_required_check_missing_or_not_pass: every required audit check exists and passed
+false <- required_check(K), not check_ok(K).
+% IC dc_audit_check_failed: no audit check may report fail
+false <- check_status(K,fail).
+
+% ---------------------------------------------------------------- pinned metadata values (from the spec text)
+expect_value(meta_samples_per_record,10). expect_value(meta_seconds_per_record,10). expect_value(meta_records_per_packet,30).
+expect_value(meta_trial_size,200). expect_value(meta_eggs_reporting,25).
+expect_value(meta_start_epoch,954547200). expect_value(meta_end_epoch,954633599).
+expect_value(meta_start_text_utc,2000-04-01_00_00_00). expect_value(meta_end_text_utc,2000-04-01_23_59_59).
+expect_value(meta_seconds_of_data,86400). expect_value(data_rows,86400). expect_value(devices,25).
+expect_value(first_epoch,954547200). expect_value(last_epoch,954633599).
+expect_value(cells_expected_capacity,2160000).
+% spec "previously reported summary", recomputed from source by AWK; the contract requires the recomputation to AGREE
+expect_value(cells_valid,2145238). expect_value(cells_missing,14762). expect_value(min_valid,62). expect_value(max_valid,136).
+expect_value(zero_imputed_cells,0). expect_value(device_id_duplicates,0). expect_value(time_gaps,0). expect_value(time_duplicates,0).
+value_match(K) <- expect_value(K,V), check_value(K,V).
+% IC dc_pinned_value_mismatch: recomputed value equals the spec value (or the check is absent)
+false <- expect_value(K,V), not value_match(K).
+
+% ---------------------------------------------------------------- valid count 0..200
+% IC dc_observed_min_out_of_range: observed global minimum is a valid count
+false <- check_value(min_valid,V), not count_domain(V).
+% IC dc_observed_max_out_of_range: observed global maximum is a valid count
+false <- check_value(max_valid,V), not count_domain(V).
+% IC dc_device_min_out_of_range: per-device minimum is a valid count 0..200
+false <- dev_min(D,V), not count_domain(V).
+% IC dc_device_max_out_of_range: per-device maximum is a valid count 0..200
+false <- dev_max(D,V), not count_domain(V).
+is_hist_support(201).
+% IC dc_histogram_support: histogram has exactly the 201 bins 0..200
+false <- hist_support(D,N), not is_hist_support(N).
+hist_ok(D) <- dev_n_valid(D,N), hist_total(D,N).
+% IC dc_histogram_total_mismatch: histogram mass equals the number of valid cells
+false <- device_observed(D), not hist_ok(D).
+% IC dc_r_awk_n_valid_disagree: R and AWK agree on per-device valid count
+false <- device_observed(D), dev_n_valid(D,N), not r_awk_agree(D).
+r_awk_agree(D) <- dev_n_valid(D,N), r_n_valid(D,N).
+r_total_agree <- pooled_n(N), check_value(cells_valid,N).
+% IC dc_pooled_total_disagree: pooled R count equals the AWK valid-cell total
+false <- pooled_n(N), not r_total_agree.
+
+% ---------------------------------------------------------------- missing is explicit, never zero, no imputation
+% IC dc_rows_do_not_balance: per device valid + missing = number of seconds
+false <- device_observed(D), not dev_rows_balance(D).
+% IC dc_missing_runs_inconsistent: missing-run bookkeeping consistent with missing count
+false <- device_observed(D), not dev_missing_run_consistent(D).
+% IC dc_zero_imputation_signature: a device with missing cells must not show those cells as zero counts
+false <- zero_imputation_signature(D).
+% IC dc_imputation_applied: no imputation method of any kind may be recorded
+false <- imputation_applied(M).
+is_zero(0).
+% IC dc_zero_signature_count: number of zero-imputation signatures is zero
+false <- zero_imputation_signature_count(N), not is_zero(N).
+
+% ---------------------------------------------------------------- UTC bounds
+% IC dc_first_valid_outside_utc_day: first valid timestamp lies inside [start,end] of 2000-04-01 UTC
+false <- dev_first_valid(D,T), not within_utc_day(T).
+% IC dc_last_valid_outside_utc_day: last valid timestamp lies inside [start,end] of 2000-04-01 UTC
+false <- dev_last_valid(D,T), not within_utc_day(T).
+
+% ---------------------------------------------------------------- stable device IDs (identity and column order)
+expected_order(1,1). expected_order(2,28). expected_order(3,33). expected_order(4,37). expected_order(5,100). expected_order(6,101).
+expected_order(7,102). expected_order(8,103). expected_order(9,107). expected_order(10,108). expected_order(11,109). expected_order(12,110).
+expected_order(13,111). expected_order(14,112). expected_order(15,114). expected_order(16,115). expected_order(17,116). expected_order(18,118).
+expected_order(19,1000). expected_order(20,1005). expected_order(21,1021). expected_order(22,1022). expected_order(23,1024). expected_order(24,1025).
+expected_order(25,1027).
+expected_device(D) <- expected_order(P,D).
+order_match(P,D) <- expected_order(P,D), device_order(P,D).
+% IC dc_device_position_changed: every spec device sits at its spec column position
+false <- expected_order(P,D), not order_match(P,D).
+% IC dc_device_missing_from_data: every spec device is reported
+false <- expected_device(D), not device_observed(D).
+% IC dc_unknown_device: no device outside the spec list
+false <- device_observed(D), not expected_device(D).
+
+% ---------------------------------------------------------------- raw source immutability / provenance / no synthetic-as-physical
+spec_sha256(63b52882582a8c7abd555f81002da6ce08c1161ec07526f422e6fdfcaf209d77).
+sha_match(H) <- spec_sha256(H), source_sha256(H).
+% IC dc_source_hash_mismatch: SHA-256 of basketdata-2000-04-01.csv equals the spec hash
+false <- spec_sha256(H), not sha_match(H).
+% IC dc_source_tree_dirty: data/ is unmodified in git
+false <- source_tree_status(dirty).
+has_source_hash(basket) <- spec_sha256(H), sha_match(H).
+% IC dc_physical_without_provenance: anything represented as a physical observation carries a verified source hash
+false <- represented_as(X,physical_observation), not has_source_hash(X).
+% IC dc_synthetic_as_physical: synthetic data must never be represented as physical observations
+false <- synthetic_dataset(X), represented_as(X,physical_observation).
+% IC dc_second_csv_not_declared: exactly one source CSV (no undeclared extra date / holdout / merged file)
+false <- data_csv_count(N), not is_one(N).
+is_one(1).

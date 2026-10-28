@@ -1,0 +1,91 @@
+% EGG-001 CLAIM CLASSIFICATION: every claim is exactly one of verified / hypothesis / unverified.
+%   verified   = a result recomputed from the source CSV (or an artifact checked by this run) with evidence that holds in the fact set.
+%                "verified" never means "H0 is true" or "an effect exists"; computed null-not-rejected results are verified AS RESULTS.
+%   hypothesis = a scientific statement/question that is planned or blocked, not established. Needs a test plan or an explicit blocker.
+%   unverified = an implementation/proof/replication claim for which no tool-run evidence is checked here.
+allowed_status(verified). allowed_status(hypothesis). allowed_status(unverified).
+classified(C) <- status(C,S), allowed_status(S).
+% IC cl_unclassified: every claim has a status
+false <- claim(C), not classified(C).
+% IC cl_status_not_allowed: status vocabulary is closed
+false <- status(C,S), not allowed_status(S).
+% IC cl_verified_and_hypothesis: statuses are exclusive
+false <- status(C,verified), status(C,hypothesis).
+% IC cl_verified_and_unverified: statuses are exclusive
+false <- status(C,verified), status(C,unverified).
+% IC cl_hypothesis_and_unverified: statuses are exclusive
+false <- status(C,hypothesis), status(C,unverified).
+% IC cl_status_without_claim: statuses attach to registered claims only
+false <- status(C,S), not claim(C).
+
+% ---- evidence relation (derived from facts generated out of egg/results and the raw CSV)
+evidence_ok(ev_source_hash) <- spec_sha256(H), sha_match(H).
+evidence_ok(ev_awk_integrity) <- awk_integrity_fail_count(0), required_check(meta_start_epoch), check_ok(meta_start_epoch).
+evidence_ok(ev_cell_counts) <- value_match(cells_valid), value_match(cells_missing), value_match(min_valid), value_match(max_valid).
+evidence_ok(ev_no_zero_imputation) <- zero_imputation_signature_count(0), check_value(zero_imputed_cells,0).
+evidence_ok(ev_network_z_defined) <- nz_defined_all_t, rowvalid_total_ok.
+evidence_ok(ev_parity) <- parity_fail_count(0), parity_has_rows(yes).
+evidence_ok(ev_t1_no_holm_rejection) <- holm_reject_count(t1,0), result_file(r_device_summary).
+evidence_ok(ev_t3_no_bh_hit) <- network_bh_hits(0), var_z_ci_contains_one.
+evidence_ok(ev_t4_no_crossdev) <- crossdev_nonsig(max_abs_pairwise_r), crossdev_nonsig(mean_squared_r), crossdev_nonsig(mean_r).
+
+% ---- claims. claim_kind: data_fact | computed_result | scientific_hypothesis | implementation | formal_proof | replication
+claim(c_source_hash). claim_kind(c_source_hash,data_fact). status(c_source_hash,verified). evidence(c_source_hash,ev_source_hash).
+claim(c_dataset_integrity). claim_kind(c_dataset_integrity,data_fact). status(c_dataset_integrity,verified). evidence(c_dataset_integrity,ev_awk_integrity).
+claim(c_cell_counts_recomputed). claim_kind(c_cell_counts_recomputed,data_fact). status(c_cell_counts_recomputed,verified). evidence(c_cell_counts_recomputed,ev_cell_counts).
+claim(c_missing_never_zero). claim_kind(c_missing_never_zero,data_fact). status(c_missing_never_zero,verified). evidence(c_missing_never_zero,ev_no_zero_imputation).
+claim(c_network_z_defined_every_second). claim_kind(c_network_z_defined_every_second,data_fact). status(c_network_z_defined_every_second,verified). evidence(c_network_z_defined_every_second,ev_network_z_defined).
+claim(c_cross_language_parity). claim_kind(c_cross_language_parity,computed_result). status(c_cross_language_parity,verified). evidence(c_cross_language_parity,ev_parity).
+claim(c_t1_device_null_not_rejected). claim_kind(c_t1_device_null_not_rejected,computed_result). status(c_t1_device_null_not_rejected,verified). evidence(c_t1_device_null_not_rejected,ev_t1_no_holm_rejection).
+claim(c_t3_network_z_no_bh_hit). claim_kind(c_t3_network_z_no_bh_hit,computed_result). status(c_t3_network_z_no_bh_hit,verified). evidence(c_t3_network_z_no_bh_hit,ev_t3_no_bh_hit).
+claim(c_t4_crossdev_not_significant). claim_kind(c_t4_crossdev_not_significant,computed_result). status(c_t4_crossdev_not_significant,verified). evidence(c_t4_crossdev_not_significant,ev_t4_no_crossdev).
+
+claim(c_h0). claim_kind(c_h0,scientific_hypothesis). status(c_h0,hypothesis). tests_claim(c_h0,t1). tests_claim(c_h0,t4).
+claim(c_h1_reproducible_deviation). claim_kind(c_h1_reproducible_deviation,scientific_hypothesis). status(c_h1_reproducible_deviation,hypothesis). blocked_by(c_h1_reproducible_deviation,no_independent_holdout_date).
+claim(c_q1_device_binomial). claim_kind(c_q1_device_binomial,scientific_hypothesis). status(c_q1_device_binomial,hypothesis). tests_claim(c_q1_device_binomial,t1).
+claim(c_q2_entropy_sensitivity). claim_kind(c_q2_entropy_sensitivity,scientific_hypothesis). status(c_q2_entropy_sensitivity,hypothesis). tests_claim(c_q2_entropy_sensitivity,t5).
+claim(c_q3_temporal_structure). claim_kind(c_q3_temporal_structure,scientific_hypothesis). status(c_q3_temporal_structure,hypothesis). tests_claim(c_q3_temporal_structure,t8). tests_claim(c_q3_temporal_structure,t9). tests_claim(c_q3_temporal_structure,t10).
+claim(c_q4_cross_device_sync). claim_kind(c_q4_cross_device_sync,scientific_hypothesis). status(c_q4_cross_device_sync,hypothesis). tests_claim(c_q4_cross_device_sync,t4). tests_claim(c_q4_cross_device_sync,t6). tests_claim(c_q4_cross_device_sync,t7).
+claim(c_q5_permutation_invariance). claim_kind(c_q5_permutation_invariance,scientific_hypothesis). status(c_q5_permutation_invariance,hypothesis). tests_claim(c_q5_permutation_invariance,t3).
+claim(c_q6_event_prediction). claim_kind(c_q6_event_prediction,scientific_hypothesis). status(c_q6_event_prediction,hypothesis). blocked_by(c_q6_event_prediction,no_independent_event_metadata_exists).
+claim(c_q7_symmetry_breaking_vs_instrument). claim_kind(c_q7_symmetry_breaking_vs_instrument,scientific_hypothesis). status(c_q7_symmetry_breaking_vs_instrument,hypothesis). blocked_by(c_q7_symmetry_breaking_vs_instrument,no_candidate_survives_correction_and_replication).
+claim(c_p_toy_anisotropy_model). claim_kind(c_p_toy_anisotropy_model,scientific_hypothesis). status(c_p_toy_anisotropy_model,hypothesis). blocked_by(c_p_toy_anisotropy_model,no_justified_observable_mapping).
+
+claim(c_changepoint_calibrated). claim_kind(c_changepoint_calibrated,computed_result). status(c_changepoint_calibrated,unverified). missing_evidence(c_changepoint_calibrated,t10_output_absent_or_not_checked). uses_test(c_changepoint_calibrated,t10).
+claim(c_holdout_replication). claim_kind(c_holdout_replication,replication). status(c_holdout_replication,unverified). missing_evidence(c_holdout_replication,no_holdout_date_exists).
+claim(c_conditional_entropy_mi). claim_kind(c_conditional_entropy_mi,computed_result). status(c_conditional_entropy_mi,unverified). missing_evidence(c_conditional_entropy_mi,spec_G_not_implemented_in_this_experiment).
+claim(c_wavelets). claim_kind(c_wavelets,computed_result). status(c_wavelets,unverified). missing_evidence(c_wavelets,spec_I_wavelets_not_implemented).
+claim(c_dafny_verified). claim_kind(c_dafny_verified,formal_proof). status(c_dafny_verified,unverified). missing_evidence(c_dafny_verified,dafny_run_not_checked_by_alp_check). requires_tool(c_dafny_verified,dafny).
+claim(c_lean_theorems_proved). claim_kind(c_lean_theorems_proved,formal_proof). status(c_lean_theorems_proved,unverified). missing_evidence(c_lean_theorems_proved,lake_build_not_checked_by_alp_check). requires_tool(c_lean_theorems_proved,lean).
+claim(c_sas_crosscheck). claim_kind(c_sas_crosscheck,implementation). status(c_sas_crosscheck,unverified). missing_evidence(c_sas_crosscheck,sas_not_run_here). requires_tool(c_sas_crosscheck,sas).
+claim(c_tsql_schema_executed). claim_kind(c_tsql_schema_executed,implementation). status(c_tsql_schema_executed,unverified). missing_evidence(c_tsql_schema_executed,no_sql_server_run_here). requires_tool(c_tsql_schema_executed,tsql).
+claim(c_ampl_objective). claim_kind(c_ampl_objective,implementation). status(c_ampl_objective,unverified). missing_evidence(c_ampl_objective,solver_run_not_checked_by_alp_check). requires_tool(c_ampl_objective,ampl).
+claim(c_matlab_executed). claim_kind(c_matlab_executed,implementation). status(c_matlab_executed,unverified). missing_evidence(c_matlab_executed,only_octave_cross_check_exists_matlab_never_run).
+claim(c_elixir_runner_tested). claim_kind(c_elixir_runner_tested,implementation). status(c_elixir_runner_tested,unverified). missing_evidence(c_elixir_runner_tested,mix_test_not_checked_by_alp_check). requires_tool(c_elixir_runner_tested,elixir).
+claim(c_ed25519_manifest_signed). claim_kind(c_ed25519_manifest_signed,implementation). status(c_ed25519_manifest_signed,unverified). missing_evidence(c_ed25519_manifest_signed,signing_is_a_proposed_step_no_signature_exists).
+
+% ---- classification integrity constraints
+has_evidence_ok(C) <- evidence(C,E), evidence_ok(E).
+% IC cl_verified_without_evidence: verified needs at least one evidence item that holds in the fact set
+false <- status(C,verified), not has_evidence_ok(C).
+% IC cl_verified_evidence_failed: ALL evidence items of a verified claim must hold
+false <- status(C,verified), evidence(C,E), not evidence_ok(E).
+% IC cl_verified_formal_proof: formal-proof claims are never verified without a checked proof artifact
+false <- status(C,verified), claim_kind(C,formal_proof), not proof_checked(C).
+% IC cl_verified_replication: replication claims are never verified without a replication record
+false <- status(C,verified), claim_kind(C,replication), not replication_record(C).
+% IC cl_verified_scientific_hypothesis: a scientific hypothesis cannot be marked verified
+false <- status(C,verified), claim_kind(C,scientific_hypothesis).
+% IC cl_verified_tool_absent: a verified claim cannot depend on a tool with no artifacts in the repo
+false <- status(C,verified), requires_tool(C,T), tool_artifact_absent(T).
+% IC cl_verified_depends_on_unrun_test: a verified claim cannot rest on a test whose result file is absent
+false <- status(C,verified), uses_test(C,T), not test_executed(T).
+has_plan(C) <- tests_claim(C,T).
+has_plan(C) <- blocked_by(C,R).
+% IC cl_hypothesis_without_plan: a hypothesis names the test that bears on it or the blocker that prevents testing
+false <- status(C,hypothesis), not has_plan(C).
+has_gap(C) <- missing_evidence(C,R).
+% IC cl_unverified_without_reason: an unverified claim records what evidence is missing
+false <- status(C,unverified), not has_gap(C).
+% IC cl_h1_verified_without_holdout: H1 is never verified while no independent holdout exists
+false <- status(C,verified), claim_kind(C,scientific_hypothesis), holdout_absent.
