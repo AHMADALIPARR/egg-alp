@@ -16,7 +16,7 @@ Futhark vs R: rolling-60 variance, fully observed windows only (qualified, NaN p
 Futhark vs R: rolling-60 mean, fully observed windows only	35131	TRUE	0	1e-09	PASS
 Futhark null simulation: n per device equals real observed count (same mask)	25	TRUE	0	0	PASS
 Futhark null simulation: device means within 4.5 SE of 100 (statistical sanity)	25	TRUE	2.58027	4.5	PASS
-Futhark null simulation: device variances within 15% of 50 (statistical sanity)	25	TRUE	0.00823608	0.05	PASS
+Futhark null simulation: device variances within 5% of 50 (statistical sanity)	25	TRUE	0.00823608	0.05	PASS
 Octave vs AWK: n_valid	25	TRUE	0	0	PASS
 Octave vs Futhark: mean	25	TRUE	4.81402e-12	1e-09	PASS
 Octave vs Futhark: variance	25	TRUE	9.53752e-13	1e-09	PASS

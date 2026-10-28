@@ -6,7 +6,7 @@ Three things in one repository:
 2. **One day of EGG data**: 25 devices, 1 April 2000 (UTC), one row per second (`data/`).
 3. **ALP**, a small C++ logic engine that reads Horn clauses (rules like "A is true if B and C are true"), with parsing, unification, inference, abduction and integrity constraints, plus an optional graph backend (`alp/`).
 
-The plan, the data and the engine sit side by side. The EGG-001 analyses themselves are not written yet.
+The plan, the data and the engine sit side by side. The first EGG-001 experiment has now been run on the data; see [the report](docs/EGG-001-REPORT.md) and the section below.
 
 ## What the data is
 
@@ -24,6 +24,25 @@ The file has 86,400 rows and 25 devices, so 2,160,000 cells. 2,145,238 hold a co
 
 Both figures are made by `docs/scripts/make_figures.py` (needs numpy and matplotlib).
 
+## EGG-001 first experiment: result
+
+Short version: on this one day, the 25 devices look like fair coins. Nearly every test found nothing.
+
+- Pooled counts match Binomial(200, 0.5) (p = 0.39).
+- The network score, device correlations, rolling entropy, spectra and change points are all inside what chance produces.
+- One weak result survived multiple-testing correction: a small serial correlation in device 1025 (corrected p = 0.010). It is exploratory, from a single day with no holdout.
+- Device 33 reports only 84.0% of the day (13,810 empty seconds). Empty cells are never turned into zeros.
+
+Read [docs/EGG-001-REPORT.md](docs/EGG-001-REPORT.md) for the details, figures, and what was and was not checked.
+
+```sh
+make egg001            # about 30 s: runs every installed component, prints PASS / FAIL / UNAVAILABLE / PENDING
+make egg001-manifest   # writes egg/results/manifest.json (versions, seeds, hashes, test results)
+make egg001-full       # also re-runs the slow R steps (about 25 min)
+```
+
+The last run: 13 PASS, 3 UNAVAILABLE, 0 FAIL. The three that did not run are SAS, AMPL and MATLAB, which are not installed here. Their files are written but unrun. The T-SQL file was only syntax-checked. The results are in `egg/results/`, the code in `egg/`.
+
 ## Layout
 
 ```
@@ -35,6 +54,9 @@ data/README.md                         file format and verified numbers
 alp/                                   the ALP logic engine, as received (source, tests, .alp libraries)
 docs/ALP-BUILD.md                      build and test results for alp/
 docs/img/, docs/scripts/               the two figures and the script that makes them
+docs/EGG-001-REPORT.md                 the EGG-001 first-experiment report
+egg/                                   EGG-001 code: awk, futhark, octave, r, tsql, ampl, sas, dafny, lean, elixir, contracts, results
+Makefile                               make egg001 and related targets
 LICENSE                                SnapKitty Opaque Source License v1.0
 ```
 

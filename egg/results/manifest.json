@@ -1,0 +1,217 @@
+{
+  "experiment": "EGG-001 first experiment",
+  "generated_utc": "2026-10-28T02:21:44Z",
+  "input": {
+    "file": "data/basketdata-2000-04-01.csv",
+    "sha256": "63b52882582a8c7abd555f81002da6ce08c1161ec07526f422e6fdfcaf209d77",
+    "bytes": 8880009
+  },
+  "software_versions": {
+    "R": "R version 4.5.0 (2025-04-11)",
+    "jsonlite": "1.9.1",
+    "ggplot2": "3.5.1",
+    "awk": "GNU Awk 5.2.1, API 3.2, PMA Avon 8-g1, (GNU MPFR 4.2.2, GNU MP 6.3.0)",
+    "futhark": "Futhark 0.25.27.",
+    "octave": "GNU Octave, version 9.4.0",
+    "gcc": "gcc (Debian 14.2.0-19) 14.2.0",
+    "python": "Python 3.13.5",
+    "sqlglot": "30.25.0",
+    "dafny": "4.11.0+fcb2042d6d043a2634f0854338c08feeaaaf4ae2",
+    "lean": "Lean (version 4.35.0, x86_64-unknown-linux-gnu, commit eb6cafb7290e8bd5f2937522d8d804f58f02bafc, Release)",
+    "elixir": "Elixir 1.18.3 (compiled with Erlang/OTP 27)",
+    "os": "Linux 6.12.94+",
+    "git_head": "ebb26e7ed7fbf59d107b7b2eb2ff0e68d1e92c51"
+  },
+  "tool_binary_sha256": {
+    "awk": "c90aba59e13752526d9cb767533f3802d3b7cd5dd6355615516d21abbc28b005",
+    "futhark": "83784b16d83dc1c553a37cde27ee9e489563fd6db36d6ea963605e78c39266a2",
+    "octave": "82ce393bd35f96ac9fa34edf7a0d257603ca980baace89beaf48032feb801383",
+    "Rscript": "cb6ccb7e46660cd4fa01fed6795def022b56441bb83726f8ca2c59828b5b3b36",
+    "gcc": "a23ecab8ff08f09ad8c80602c2c5df7f49e09c25905cb8975902e101bf72635f",
+    "python3": "889c603f0d17cb54060951bcf4c4f9b8c9ebd9e52b392c70209bbb9755d797d9"
+  },
+  "parameters": {
+    "null": "Binomial(200, 0.5)",
+    "windows_s": [60, 300, 1800],
+    "alpha": 0.05,
+    "changepoint_min_segment_s": 60,
+    "changepoint_null_sims_per_structure": 4000,
+    "crossdev_shift_sims": 1000,
+    "lag_shift_sims": 5000,
+    "bootstrap_resamples": 500,
+    "bootstrap_block_s": 300,
+    "welch": "periodic Hann, 4096 s, step 2048, 41 segments",
+    "holdout": "none exists; all findings are exploratory"
+  },
+  "seeds": {
+    "seed_base": 20000401,
+    "derivation": "seed_for(tag) in egg/r/lib.R",
+    "static_tags": {
+      "netz-pit": 20004109,
+      "netz-bootstrap": 20011694,
+      "crossdev-shift": 20011256,
+      "crossdev-block": 20011037,
+      "crossdev-lag": 20008135,
+      "crossdev-tail": 20009643,
+      "spectral-null": 20009738,
+      "welch-null": 20005990,
+      "cp-pelt-selftest": 20014592,
+      "cp-pelt-null": 20008276
+    },
+    "note": "Futhark simulations use explicit integer seeds passed on the command line (see egg/tests/futhark_sentinel.sh)"
+  },
+  "source_sha256": {
+    "awk/fut2tsv.awk": "81456388c546631e3a290dfe8a19abae5e404d6e2275c2b5c9e9468b4dec09f7",
+    "awk/inspect.awk": "0e7233e9e89067cba10b356401b18d074347355b988e4af0f9c8d5aed2bfc0ed",
+    "awk/to_futhark.awk": "44d401c36f5b207a00418f8dd16167f5b037dde0238de6efe532aa39b87fdd3d",
+    "futhark/egg.fut": "d22eb8410137c20087104ec9ffd403738bcc571c9e44e46e4d3cb4badcbf0d76",
+    "futhark/run.sh": "cc41e20abd4e6c628479b365fddc30f6193c6aa712fba13782c087e46337debc",
+    "r/01_device.R": "76cbe4152f2d3ec9339bc5d414284db5b624b1c91b545fc0cfdbba0a23295890",
+    "r/02_network.R": "adb3091df36d91b1333fdb272ac29e94f2d82156ed997536c03a4bafd26c9acc",
+    "r/03_rolling.R": "3296ba2f10535ef1f9b46d1145da01030ee1a0f285a0761a47fc449976d19511",
+    "r/04_crossdev.R": "6bcad259943035a5a61b61a11a932d3702538fd69657e3486d3d394b7b162677",
+    "r/05_timeseries.R": "1e6c5a6d608fe87de8632248a928df201c2173a9fd1694fead3f5c6a292475df",
+    "r/06_changepoint.R": "7cb6bc8df5b0d53ae4f10e09c613843fb55890e60628b1ed49e20486ce8224a9",
+    "r/07_figures.R": "e5d0a1efc8b1d3cc43c89ca3a47c9bd40f27e3fe0e552c3fafa5bb4cb8fcae1d",
+    "r/08_parity.R": "0802311ef0917c9379a21da68e4053e9588b9ee984b47e5a86af3d648a4958dd",
+    "r/09_headline.R": "dfaa1ed07bfea4a7894799122d597e38be14a8d797854b2a25489395c487de96",
+    "r/11_manifest.R": "bfe0caca0a5c09411a70bd284bca38e1d7c2e9b620f1407aeb0cd4ea75f9bb2a",
+    "r/lib.R": "c7f2655bbef915f45a286f609fcaee3022bebfd1c98808ecba293d08fcad47d8",
+    "r/pelt.c": "45d8621e2b8c842ce4a76bda13ac8d5be89685ef9b58d2eb2483ff1aea7c7ffc",
+    "octave/egg_spectral.m": "71ac0be2ebcef98718b644755646afa636cac56cb76c2552052a1db0d142e679",
+    "tests/futhark_sentinel.sh": "c8af2740765de6d159b25745ac6b439549c3844dbfd260a1423b19dd1190c279",
+    "tests/run_egg001.sh": "e4b1b00e343bf50e50ac477d17a3add88e2f91de29e570133ee21629bc66dfff",
+    "tsql/check_syntax.py": "664cb8aec3f7cceccfaff38a17eca2ed348c345278f70a31949d0c19e6122b05",
+    "tsql/schema.sql": "9967106ebb2ab2241b60b35e33281e068dff88aea31a42ce22c2f30100b87817",
+    "sas/crosscheck.sas": "f6117822e152c2d0c60e102f84fcedc10ad1b376a0f458366ff4ab3efdebb08e",
+    "ampl/README.md": "00695ba76ff07cab1459a28200f87a6d6f802ea1f671e1a1c1e807023b25b2f4",
+    "ampl/fixture.dat": "4c9b643984f2ed2ef7b7156adebd67945d8980b0ce2da923a1a958a070e2ec5a",
+    "ampl/fixture_expected.tsv": "2bbf34a1ec49be75e798bbc5f0e793d19059056fbc8286dcec7531e81325ee95",
+    "ampl/make_fixture.R": "4e8eed2f339aa7fa0f1958e8b299f1db67d58ad247b7b28759d7b29f8045ff8e",
+    "ampl/segmentation.mod": "50c52336b003ae47be64302725d12c98bde736cf47798fe36f95516ac90c97db"
+  },
+  "output_sha256": {
+    "results/alp_check.txt": "4e1c4b0249b967a2732e4f38dc5aced832358a579512d488b05685c1871f8a0f",
+    "results/awk_device.tsv": "b31fa7926258d6dc4a9ba1400340c29214185896f3fb11767d9505c793300367",
+    "results/awk_hist.tsv": "6ddab59d78102a00ceac8cd2f4fec5cacc66001b070f6226ef12394308236eee",
+    "results/awk_integrity.tsv": "648c3776eca37cbbcda3a592f8170b7bfc8afb67bddbf9c4ba533161b38a0b13",
+    "results/awk_rowvalid.tsv": "8bdb2b4aa118f6aca45a615fe48c8f6f39edc014561517cc645eec86b61457bc",
+    "results/headline.tsv": "7231dc795238674a71b5b43fbb45007d770eb2260c4ca85e1b391d7e384c6617",
+    "results/parity.tsv": "67451a17df02679e9020128ed5a63aee75fd1044c603a4f7a4099e604e6d1ed4",
+    "results/r_acf_followup_quarters.tsv": "4cf0c0da5438d7d7faf49292c84724026ae894016729ed324b6cdccc3e36a353",
+    "results/r_acf_network.tsv": "9630fab633c5fb156b9db81251cb1c9b9e97d7696b10a136c020c7ab23efdbd4",
+    "results/r_acf_summary.tsv": "7b40f17dfb3962e89e75461ce2aa0d75fdc2360d1d12e7fe2668022e5342f68a",
+    "results/r_binomial_pmf.tsv": "d8ec5a04d63f3147dc181e8ae92cf1e0c3c57fd31199a4616ef422cd3b897b06",
+    "results/r_changepoint_candidates.tsv": "210d54cfffc2a54c567180a479cdb09cc0ef5f8b7fcdc058a02ab970436e8fe4",
+    "results/r_changepoint_cusum_gain.tsv": "8dff729ef4ed2b8ebf7d0e4a2bd8b96474cd764ad2e17a0a568ca56b8606d46e",
+    "results/r_changepoint_null_check.tsv": "10af323cd349e5c56b9a1e12613b0c7eb43088ad1dd448d7f536c02d11606bd4",
+    "results/r_changepoint_sensitivity.tsv": "3e9432fef8083456e7b7071bef3a7177c521d83a684030a7fa2bad1789488965",
+    "results/r_corr_matrix.tsv": "4c44c95e23c21a9adcf815e1d01c100d8abb8ace96e7287236fe9393e9b8cbe2",
+    "results/r_crossdev_bootstrap_ci.tsv": "31a4b0d06b968bb21fa5816a2643b85303b3054843771ac80ce7b4105df1eb0e",
+    "results/r_crossdev_global.tsv": "227aeb82785d2d3e9d5820f00fb15d5fe631ab7d9a16a7f2a66b3eed5d4ce0a3",
+    "results/r_crossdev_lag_global.tsv": "d517c10f4e7a64107bacd14ca0b67bca0a30b754979da6d69c023deb19c5af7f",
+    "results/r_crossdev_lag_profile.tsv": "54ebb2e2ece330e66b5b48325b135065c9c9e5c92f791497713ec743a2547c41",
+    "results/r_crossdev_tail_global.tsv": "1527f929afe2dcffc663224ee438f370c69801752871369a6c618ed62fb39e0c",
+    "results/r_device_quantiles.tsv": "5c0fb0217538c43572417c345508129f8465cb9a5d40ec550e2ae662c6ff1911",
+    "results/r_device_summary.tsv": "40449d58fa0704098cd13b6377346df8a84bb242a416cbd6a264a2a143fb373d",
+    "results/r_device_tails.tsv": "6f49e6fd85e7259e3fa8daa86575f2fe775e3e0d3e1667a823d521a336ec8e66",
+    "results/r_network_z_minute.tsv": "425ccf833f744d6abc63f7598c958bcc10228293163b1af214d493aaaa099c98",
+    "results/r_network_z_summary.tsv": "5da8a03a7d96a742cce259fbc841e0b3667b4ae492bfd249571f4b79191acdf4",
+    "results/r_pair_crossdev.tsv": "98afe69aa56ffb543b70cd42b056989320dfc07c5a48916eedb5967535a3f53a",
+    "results/r_periodogram_not_analysed.tsv": "7f321ade65c8ee6d3d1ec70a56c0bbf248a9775278c8ae0d12a44f727b2bb1b6",
+    "results/r_periodogram_peaks.tsv": "0463e1f7c16559b76eba5e5e59a68d030303675b1eed82bf6f0b7981354a34b5",
+    "results/r_periodogram_summary.tsv": "b0b70ce5bd02e740a492dd937cdd4d7e0a1853a3fa046b85ad0c3e228d6b0742",
+    "results/r_pooled_counts.tsv": "979c5cbb438797e523a4c4b51573c2ea8ef19de8008a093de0ebe1ee561ba6ae",
+    "results/r_pooled_gof.tsv": "a433bcfb162f013bdece460da4efc6f975f8e5142fe7643ba59304fd4553d84f",
+    "results/r_rolling_device.tsv": "70071dabd73b3554120aff7da4cc0930a26d00b506775ea94595090375989db6",
+    "results/r_rolling_global.tsv": "9a31a7b9ff02fd002e810a31ccded26b370c3f8d71f9bf59fa0e33ce3198ba26",
+    "results/r_rolling_network.tsv": "a5f0b869c34d782548b38d0f5c6ba4cd58025d94d0b6d54c2d3104ea28470d65",
+    "results/r_rolling_network_series.tsv": "9ac64c9d0f9c8588ada4151276d0f42e3321c5240398b46666d31d7401ab8981",
+    "results/r_welch_peaks.tsv": "9cba4230d94236bddc1ebedceb72b4f3f5f1cd5a3ebfdec9553464f92ff8a954",
+    "results/r_welch_psd.tsv": "9a2397876eb8b7307603d14bd701b741e7805556746fa165d0ff090925f56211",
+    "results/r_welch_summary.tsv": "4912ec8751ea04b2c4c020cd42fb9a683de2e3868256258c6eb87932beb5f660",
+    "docs/img/egg001-acf.png": "0fb60136d0f4f9038b9d5358410bd0fbd56d66c80662f819d2f36b9b45c0a92b",
+    "docs/img/egg001-changepoints.png": "2a8f6f0c250c20f060250d4c79d12e0ca2497d328263cc28344db203fdbc52ca",
+    "docs/img/egg001-corr-heatmap.png": "b70f237cfb84eb75d5b315171054b788f789fdb3bcb4c274664ed3462a115352",
+    "docs/img/egg001-device-deviation.png": "7ff7d3beb51cb3dacbd9174eeadae525d0d4a14f417c932145e82c436f273d4f",
+    "docs/img/egg001-network-z.png": "a0ebfe1477d7265f030d61b4807a3852f94bb147413c9a60249052f41c9c9e74",
+    "docs/img/egg001-power-spectrum.png": "7ebe8032594822360e6ce38095b8bff229b1c472949c903a3cb7a5d504591e89",
+    "docs/img/egg001-rolling-entropy.png": "86e1796f47df5f988e29c69dffe6b8199077c7ed144b933520cb7ab99407f2c3"
+  },
+  "test_results": {
+    "components": {
+      "alp-contracts": {
+        "status": "PASS",
+        "detail": "make[1]: Leaving directory '/workspace/egg-alp/egg/alp_check/horn'"
+      },
+      "ampl-segmentation": {
+        "status": "UNAVAILABLE",
+        "detail": "ampl not installed; file(s) UNVERIFIED-NOT-RUN"
+      },
+      "awk-inspect": {
+        "status": "PASS",
+        "detail": "integrity checks: all PASS, no FAIL rows"
+      },
+      "dafny": {
+        "status": "PASS",
+        "detail": "make[1]: Leaving directory '/workspace/egg-alp/egg/dafny'"
+      },
+      "elixir-runner": {
+        "status": "PASS",
+        "detail": "13 tests, 0 failures"
+      },
+      "futhark-kernels": {
+        "status": "PASS",
+        "detail": "futhark run complete"
+      },
+      "futhark-sentinel": {
+        "status": "PASS",
+        "detail": "PASS seed sensitivity: seed 20000402 gives different output"
+      },
+      "input-sha256": {
+        "status": "PASS",
+        "detail": "63b52882582a8c7abd555f81002da6ce08c1161ec07526f422e6fdfcaf209d77"
+      },
+      "lean": {
+        "status": "PASS",
+        "detail": "make[1]: Leaving directory '/workspace/egg-alp/egg/lean'"
+      },
+      "matlab-native": {
+        "status": "UNAVAILABLE",
+        "detail": "matlab not installed; file(s) UNVERIFIED-NOT-RUN"
+      },
+      "octave-spectral": {
+        "status": "PASS",
+        "detail": "octave outputs written"
+      },
+      "parity-awk-futhark-r-octave": {
+        "status": "PASS",
+        "detail": "PARITY: 34 PASS, 0 FAIL, 0 UNAVAILABLE"
+      },
+      "r-headline": {
+        "status": "PASS",
+        "detail": "headline: 20 tests, 1 survive correction (exploratory), 18 null"
+      },
+      "r-results": {
+        "status": "PASS",
+        "detail": "using committed results/ from the recorded run (FULL=1 regenerates; not re-run now)"
+      },
+      "sas-crosscheck": {
+        "status": "UNAVAILABLE",
+        "detail": "sas not installed; file(s) UNVERIFIED-NOT-RUN"
+      },
+      "tsql-syntax-only": {
+        "status": "PASS",
+        "detail": "tsql syntax-only (sqlglot 30.25.0): 10 batches parsed, 0 failed; NOT executed on SQL Server"
+      }
+    },
+    "parity": {
+      "rows": 34,
+      "by_status": {
+        "PASS": 34
+      }
+    },
+    "futhark_sentinel_lines": ["PASS sentinel-invariance device_moments (missing cells hold -1 vs 77: identical output)", "PASS sentinel-invariance network_z (missing cells hold -1 vs 77: identical output)", "PASS sentinel-invariance pairwise_cov_corr (missing cells hold -1 vs 77: identical output)", "PASS sentinel-invariance rolling_moments", "PASS determinism sim_null seed 20000401 repeated: identical sha256 0dfb8c85bdcd896a", "PASS seed sensitivity: seed 20000402 gives different output"]
+  },
+  "signature": "none: no signing key was produced; no identity attestation is made"
+}

@@ -9,7 +9,7 @@
 cd "$(dirname "$0")/.."   # egg/
 CSV=../data/basketdata-2000-04-01.csv; SHA=63b52882582a8c7abd555f81002da6ce08c1161ec07526f422e6fdfcaf209d77
 mkdir -p out/log results; LOG=out/log; SUM=out/summary.tsv; : > $SUM; fails=0
-say() { printf '%-12s %-34s %s\n' "$1" "$2" "$3"; printf '%s\t%s\t%s\n' "$2" "$1" "$3" >> $SUM; [ "$1" = FAIL ] && fails=$((fails+1)); }
+say() { printf '%-12s %-34s %s\n' "$1" "$2" "$3"; printf '%s\t%s\t%s\n' "$2" "$1" "$3" >> $SUM; if [ "$1" = FAIL ]; then fails=$((fails+1)); fi; }
 run() { # name logfile cmd... ; PASS only on exit 0
   name=$1; lf=$2; shift 2
   if "$@" > $LOG/$lf 2>&1; then say PASS "$name" "$(tail -n 1 $LOG/$lf | cut -c1-110)"; else say FAIL "$name" "see egg/$LOG/$lf"; fi; }
@@ -22,10 +22,11 @@ hook() { # name dir tool-check-command command...   (entry point: <dir>/check.sh
 
 # input
 got=$(sha256sum $CSV | cut -d' ' -f1); [ "$got" = "$SHA" ] && say PASS input-sha256 "$got" || say FAIL input-sha256 "got $got"
+TLF=0; [ "$(tail -c1 $CSV | od -An -c | tr -d ' ')" = '\n' ] && TLF=1   # does the CSV end with a newline? (the AWK byte count needs to know)
 # AWK (streaming inspection, tidy intermediate, integrity report)
 if command -v awk >/dev/null; then
   mkdir -p out
-  run awk-inspect awk.log sh -c "awk -F, -v out=out -v res=results -v trailing_lf=0 -f awk/inspect.awk $CSV && ! grep -q FAIL results/awk_integrity.tsv && echo 'integrity checks: all PASS, no FAIL rows' && [ \$(awk -F'\t' '\$1==\"bytes_computed\"{print \$2}' results/awk_integrity.tsv) = \$(wc -c < $CSV) ]"
+  run awk-inspect awk.log sh -c "awk -F, -v out=out -v res=results -v trailing_lf=$TLF -f awk/inspect.awk $CSV && ! grep -q FAIL results/awk_integrity.tsv && echo 'integrity checks: all PASS, no FAIL rows' && [ \$(awk -F'\t' '\$1==\"bytes_expected_from_lines\"{print \$2}' results/awk_integrity.tsv) = \$(wc -c < $CSV) ]"
 else say UNAVAILABLE awk-inspect "awk not installed"; fi
 # Futhark
 if command -v futhark >/dev/null; then run futhark-kernels futhark.log sh futhark/run.sh; run futhark-sentinel sentinel.log sh tests/futhark_sentinel.sh
