@@ -640,6 +640,10 @@ result_file(r_acf_followup_quarters).
 result_file(r_acf_network).
 result_file(r_acf_summary).
 result_file(r_binomial_pmf).
+result_file(r_changepoint_candidates).
+result_file(r_changepoint_cusum_gain).
+result_file(r_changepoint_null_check).
+result_file(r_changepoint_sensitivity).
 result_file(r_corr_matrix).
 result_file(r_crossdev_bootstrap_ci).
 result_file(r_crossdev_global).
@@ -692,9 +696,11 @@ tool_artifact_present(sas).
 tool_artifact_present(tsql).
 event_record_count(0).
 policy_hit(docs_alp-build_md,llm_or_agent_runtime,negated).
+policy_hit(docs_egg-001-report_md,llm_or_agent_runtime,negated).
 policy_hit(egg_elixir_lib_egg_application_ex,llm_or_agent_runtime,negated).
 policy_hit(egg_elixir_lib_egg_runner_ex,llm_or_agent_runtime,negated).
 policy_hit(egg_r_lib_r,llm_or_agent_runtime,negated).
 policy_hit(readme_md,llm_or_agent_runtime,negated).
+policy_hit(docs_egg-001-report_md,consciousness_claim,negated).
 policy_hit(readme_md,consciousness_claim,negated).
 policy_hit(readme_md,simulation_claim,negated).
