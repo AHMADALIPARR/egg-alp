@@ -3,3 +3,9 @@ __pycache__/
 *.pyc
 .venv*/
 .DS_Store
+egg/out/
+egg/**/_build/
+egg/**/deps/
+egg/lean/.lake/
+*.beam
+node_modules/
