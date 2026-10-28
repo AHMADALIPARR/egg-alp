@@ -1,0 +1,94 @@
+EGG-001 ALP contract check  (engine: alp/ unmodified; facts from egg/results/*.tsv via gen_facts.sh)
+contracts: ../../contracts/horn/00_domain.alp ../../contracts/horn/10_data_contract.alp ../../contracts/horn/20_invariants.alp ../../contracts/horn/30_claims.alp ../../contracts/horn/50_policy.alp 
+== REAL facts ==
+loaded: 1225 facts, 35 rules, 77 integrity constraints; fixed point: 1534 atoms (309 derived)
+constraints violated: 0 distinct ids, 0 witnesses
+show status/2 (31): status(c_ampl_objective,unverified) status(c_cell_counts_recomputed,verified) status(c_changepoint_calibrated,unverified) status(c_conditional_entropy_mi,unverified) status(c_cross_language_parity,verified) status(c_dafny_verified,unverified) status(c_dataset_integrity,verified) status(c_ed25519_manifest_signed,unverified) status(c_elixir_runner_tested,unverified) status(c_h0,hypothesis) status(c_h1_reproducible_deviation,hypothesis) status(c_holdout_replication,unverified) status(c_lean_theorems_proved,unverified) status(c_matlab_executed,unverified) status(c_missing_never_zero,verified) status(c_network_z_defined_every_second,verified) status(c_p_toy_anisotropy_model,hypothesis) status(c_q1_device_binomial,hypothesis) status(c_q2_entropy_sensitivity,hypothesis) status(c_q3_temporal_structure,hypothesis) status(c_q4_cross_device_sync,hypothesis) status(c_q5_permutation_invariance,hypothesis) status(c_q6_event_prediction,hypothesis) status(c_q7_symmetry_breaking_vs_instrument,hypothesis) status(c_sas_crosscheck,unverified) status(c_source_hash,verified) status(c_t1_device_null_not_rejected,verified) status(c_t3_network_z_no_bh_hit,verified) status(c_t4_crossdev_not_significant,verified) status(c_tsql_schema_executed,unverified) status(c_wavelets,unverified)
+show test_executed/1 (9): test_executed(t1) test_executed(t2) test_executed(t3) test_executed(t4) test_executed(t5) test_executed(t6) test_executed(t7) test_executed(t8) test_executed(t9)
+RESULT: PASS (0 violations)
+
+== NEGATIVE overlay (must be flagged) ==
+loaded: 1279 facts, 35 rules, 77 integrity constraints; fixed point: 1592 atoms (313 derived)
+VIOLATION dc_required_check_missing_or_not_pass [1 witness]: every required audit check exists and passed
+VIOLATION dc_audit_check_failed [1 witness]: no audit check may report fail
+VIOLATION dc_device_min_out_of_range [1 witness]: per-device minimum is a valid count 0..200
+VIOLATION dc_device_max_out_of_range [1 witness]: per-device maximum is a valid count 0..200
+VIOLATION dc_histogram_total_mismatch [1 witness]: histogram mass equals the number of valid cells
+VIOLATION dc_rows_do_not_balance [1 witness]: per device valid + missing = number of seconds
+VIOLATION dc_missing_runs_inconsistent [1 witness]: missing-run bookkeeping consistent with missing count
+VIOLATION dc_zero_imputation_signature [1 witness]: a device with missing cells must not show those cells as zero counts
+VIOLATION dc_imputation_applied [1 witness]: no imputation method of any kind may be recorded
+VIOLATION dc_first_valid_outside_utc_day [1 witness]: first valid timestamp lies inside [start,end] of 2000-04-01 UTC
+VIOLATION dc_last_valid_outside_utc_day [1 witness]: last valid timestamp lies inside [start,end] of 2000-04-01 UTC
+VIOLATION dc_unknown_device [1 witness]: no device outside the spec list
+VIOLATION dc_source_tree_dirty [1 witness]: data/ is unmodified in git
+VIOLATION dc_physical_without_provenance [1 witness]: anything represented as a physical observation carries a verified source hash
+VIOLATION dc_synthetic_as_physical [1 witness]: synthetic data must never be represented as physical observations
+VIOLATION dc_second_csv_not_declared [1 witness]: exactly one source CSV (no undeclared extra date / holdout / merged file)
+VIOLATION inv_nz_empty_valid_set [1 witness]: no second has an empty valid set (else Z[t] would divide by zero)
+VIOLATION inv_nz_empty_policy [1 witness]: empty valid set yields undefined (missing), never 0 and never a division
+VIOLATION inv_entropy_precondition [1 witness]: entropy needs a normalisable histogram (mass = n_valid) and n_valid > 0
+VIOLATION inv_entropy_bounds [1 witness]: 0 <= H <= log2(201) for plug-in and Miller-Madow, Hmin >= 0
+VIOLATION inv_hmin_le_h [1 witness]: min-entropy <= Shannon entropy
+VIOLATION inv_pearson_df [1 witness]: Pearson df = pooled bins - 1
+VIOLATION inv_entropy_as_bits [1 witness]: aggregate-count entropy is never presented as 200 recoverable bits
+VIOLATION inv_h1_requirement_unmet [5 witnesses]: an h1_established fact needs every h1_requires item met for that candidate
+VIOLATION inv_h1_without_holdout [1 witness]: no H1 establishment while the repo has no independent holdout date
+VIOLATION inv_candidate_asserted_h1 [1 witness]: raw deviation candidates are exploratory; asserted H1 needs h1_established
+VIOLATION tp_test_without_null [1 witness]: every planned test names its null
+VIOLATION tp_test_without_correction [1 witness]: every planned test names its multiplicity correction
+VIOLATION tp_reported_test_has_no_result [1 witness]: a test declared as reported has its result file present with data rows
+VIOLATION tp_preregistration_unbacked [1 witness]: a test labelled preregistered needs a preregistration record (none exists)
+VIOLATION tp_fixed_seed_missing [1 witness]: stochastic tests carry a fixed seed
+VIOLATION cl_unclassified [1 witness]: every claim has a status
+VIOLATION cl_status_not_allowed [1 witness]: status vocabulary is closed
+VIOLATION cl_verified_and_hypothesis [1 witness]: statuses are exclusive
+VIOLATION cl_verified_and_unverified [1 witness]: statuses are exclusive
+VIOLATION cl_hypothesis_and_unverified [1 witness]: statuses are exclusive
+VIOLATION cl_status_without_claim [1 witness]: statuses attach to registered claims only
+VIOLATION cl_verified_without_evidence [1 witness]: verified needs at least one evidence item that holds in the fact set
+VIOLATION cl_verified_evidence_failed [1 witness]: ALL evidence items of a verified claim must hold
+VIOLATION cl_verified_formal_proof [1 witness]: formal-proof claims are never verified without a checked proof artifact
+VIOLATION cl_verified_replication [1 witness]: replication claims are never verified without a replication record
+VIOLATION cl_verified_scientific_hypothesis [1 witness]: a scientific hypothesis cannot be marked verified
+VIOLATION cl_verified_tool_absent [1 witness]: a verified claim cannot depend on a tool with no artifacts in the repo
+VIOLATION cl_verified_depends_on_unrun_test [1 witness]: a verified claim cannot rest on a test whose result file is absent
+VIOLATION cl_hypothesis_without_plan [2 witnesses]: a hypothesis names the test that bears on it or the blocker that prevents testing
+VIOLATION cl_unverified_without_reason [2 witnesses]: an unverified claim records what evidence is missing
+VIOLATION cl_h1_verified_without_holdout [1 witness]: H1 is never verified while no independent holdout exists
+VIOLATION pol_component_without_declared_kind [1 witness]: every directory in the runtime has a declared deterministic kind
+VIOLATION pol_forbidden_runtime_kind [1 witness]: no runtime component may be an LLM, agent layer, token sampler, trainer or text generator
+VIOLATION pol_runtime_input_to_sampler [1 witness]: EGG data may not be fed to a language-model sampler
+VIOLATION pol_llm_text_hit_asserted [1 witness]: no unnegated mention of LLM/agent runtime in repo text/code (line heuristic)
+VIOLATION pol_consciousness_claim_asserted [1 witness]: no unnegated consciousness mention in repo text/code (line heuristic)
+VIOLATION pol_simulation_claim_asserted [1 witness]: no unnegated simulation-of-the-universe mention in repo text/code (line heuristic)
+VIOLATION pol_forbidden_assertion [1 witness]: no claim may assert a consciousness / simulation / validated-correlation / causal finding
+VIOLATION pol_causal_without_observers [1 witness]: a causal-type claim needs independently sourced observer variables
+VIOLATION pol_candidate_named_consciousness [1 witness]: a discovered candidate is never labelled with a consciousness name
+VIOLATION pol_no_proof_implies_consciousness [1 witness]: proofs of code properties are not evidence about consciousness or simulation
+VIOLATION pol_event_without_independent_source [1 witness]: an event/intention/dream record needs an independent, externally sourced UTC origin
+VIOLATION pol_event_synthetic [1 witness]: an event record may not be synthetic or invented
+VIOLATION pol_event_without_utc [1 witness]: an event record carries an explicit UTC timestamp
+VIOLATION pol_event_count_nonzero [1 witness]: the repo currently contains no event/intention/dream data files
+VIOLATION pol_event_data_file_undeclared [1 witness]: a file that looks like event data must be declared with an independent source
+VIOLATION pol_observer_labels_in_csv [1 witness]: the historical CSV contains no observer labels; none may be attached
+constraints violated: 63 distinct ids, 69 witnesses
+negative-test expectation: 56/56 expected constraints flagged
+coverage: 63 of 77 constraint ids flagged; not exercised by this set: dc_device_missing_from_data dc_device_position_changed dc_histogram_support dc_observed_max_out_of_range dc_observed_min_out_of_ra
+RESULT: PASS (negative set flagged as required)
+
+== MUTATION device 1 first valid 1 s before the UTC day ==
+VIOLATION dc_first_valid_outside_utc_day [1 witness]: first valid timestamp lies inside [start,end] of 2000-04-01 UTC
+negative-test expectation: 1/1 expected constraints flagged
+RESULT: PASS (negative set flagged as required)
+== MUTATION one audit check flipped pass->fail ==
+VIOLATION dc_audit_check_failed [1 witness]: no audit check may report fail
+negative-test expectation: 1/1 expected constraints flagged
+RESULT: PASS (negative set flagged as required)
+== MUTATION one histogram total off ==
+VIOLATION dc_histogram_total_mismatch [1 witness]: histogram mass equals the number of valid cells
+VIOLATION inv_entropy_precondition [1 witness]: entropy needs a normalisable histogram (mass = n_valid) and n_valid > 0
+negative-test expectation: 1/1 expected constraints flagged
+RESULT: PASS (negative set flagged as required)
+
+OVERALL: PASS (real facts clean; negative + mutation sets flagged)
