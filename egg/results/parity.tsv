@@ -1,0 +1,35 @@
+check	n_compared	na_pattern_equal	max_diff	tolerance	status
+AWK vs Futhark: per-device n_valid	25	TRUE	0	0	PASS
+AWK vs Futhark: per-device sum	25	TRUE	0	0	PASS
+AWK vs Futhark: per-device sum of squares	25	TRUE	0	0	PASS
+AWK vs R: n_valid	25	TRUE	0	0	PASS
+AWK vs R: mean (sum/n)	25	TRUE	4.72198e-08	1e-06	PASS
+Futhark vs R (direct): device mean	25	TRUE	0	1e-12	PASS
+Futhark vs R (direct): device unbiased variance	25	TRUE	1.3045e-14	1e-09	PASS
+Futhark vs R: network Z per second (86,400)	86400	TRUE	4.46586e-12	1e-09	PASS
+Futhark vs R: |V_t| per second	86400	TRUE	0	0	PASS
+Futhark vs R: calibrated network Z	86400	TRUE	4.47067e-12	1e-06	PASS
+Futhark vs R: pairwise-complete correlation matrix (625 cells)	625	TRUE	5.1e-13	1e-09	PASS
+Futhark vs R (direct cor(use=pairwise)): correlation matrix	625	TRUE	1.54395e-14	1e-09	PASS
+Futhark vs R: rolling-60 count of observed cells per window (1440x25)	36000	TRUE	0	0	PASS
+Futhark vs R: rolling-60 variance, fully observed windows only (qualified, NaN pattern)	35131	TRUE	4.07275e-14	1e-09	PASS
+Futhark vs R: rolling-60 mean, fully observed windows only	35131	TRUE	0	1e-09	PASS
+Futhark null simulation: n per device equals real observed count (same mask)	25	TRUE	0	0	PASS
+Futhark null simulation: device means within 4.5 SE of 100 (statistical sanity)	25	TRUE	2.58027	4.5	PASS
+Futhark null simulation: device variances within 15% of 50 (statistical sanity)	25	TRUE	0.00823608	0.05	PASS
+Octave vs AWK: n_valid	25	TRUE	0	0	PASS
+Octave vs Futhark: mean	25	TRUE	4.81402e-12	1e-09	PASS
+Octave vs Futhark: variance	25	TRUE	9.53752e-13	1e-09	PASS
+Octave vs R: network Z first 1000 s	1000	TRUE	2.44249e-16	1e-09	PASS
+Octave vs R: |V_t| first 1000 s	1000	TRUE	0	0	PASS
+Octave vs R: mean(Z)	1	TRUE	4.98986e-15	1e-09	PASS
+Octave vs R: var(Z)	1	TRUE	2.62484e-13	1e-09	PASS
+Octave vs R: count |Z|>=3	1	TRUE	0	0	PASS
+Octave vs Futhark: correlation (5x5 block)	25	TRUE	1.40001e-14	1e-09	PASS
+Octave vs R: network-Z ACF lags 1..60	60	TRUE	4.913e-11	1e-06	PASS
+Octave vs R: periodogram peak index k	1	TRUE	0	0	PASS
+Octave vs R: periodogram peak ordinate	1	TRUE	3.72234e-08	1e-06	PASS
+Octave vs R: mean periodogram ordinate	1	TRUE	1.01566e-08	1e-06	PASS
+Octave vs R: Welch PSD (2049 bins; own implementation in both)	2049	TRUE	4.90857e-08	1e-06	PASS
+Octave vs R: Welch frequencies	2049	TRUE	5e-09	1e-07	PASS
+Octave vs R: rolling-60 variance device 1 (qualified windows)	1440	TRUE	1.8084e-12	1e-09	PASS

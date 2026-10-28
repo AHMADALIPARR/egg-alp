@@ -1,0 +1,5 @@
+statistic	observed	expected_independent	null_mean	p_perm_two_sided
+var_ratio_of_K_(devices_in_tail_per_second)	0.99311128	1	0.99964445	0.13986014
+seconds_with_K>=4	4079	4094.8512	4090.161	0.83916084
+seconds_with_K>=5	922	955.90222	954.178	0.27172827
+seconds_with_K>=6	171	180.08858	179.505	0.52047952

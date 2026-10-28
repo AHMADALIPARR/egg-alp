@@ -1,0 +1,2 @@
+segments	mean_psd_excl_dc	expected_white	max_psd	null_max_median	null_max_q95	p_max_global	sim_B
+41	1.0050452	1	1.636754	1.6357294	1.8025123	0.49350649	1000

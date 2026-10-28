@@ -1,0 +1,2 @@
+observed_max_abs_t_all_pairs_lags	null_median	null_q95	p_global_perm	lags	pairs	shifts
+4.0343096	4.2807555	4.7847526	0.85762847	-60..60 s	300	5000
