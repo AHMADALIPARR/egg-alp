@@ -1,0 +1,6 @@
+{"version": "1.3.0",
+ "packagesDir": ".lake/packages",
+ "packages": [],
+ "name": "egg_lean",
+ "lakeDir": ".lake",
+ "fixedToolchain": false}

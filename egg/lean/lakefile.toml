@@ -1,0 +1,5 @@
+name = "egg_lean"
+defaultTargets = ["EggLean"]
+
+[[lean_lib]]
+name = "EggLean"

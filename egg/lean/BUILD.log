@@ -1,0 +1,17 @@
+ℹ [3/5] Built EggLean.Audit (227ms)
+info: EggLean/Audit.lean:3:0: 'Egg.missing_not_counted_as_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: EggLean/Audit.lean:4:0: 'Egg.imputeZero_changes_count' depends on axioms: [propext, Quot.sound]
+info: EggLean/Audit.lean:5:0: 'Egg.count_partition' depends on axioms: [propext, Quot.sound]
+info: EggLean/Audit.lean:6:0: 'Egg.sumValid_le' depends on axioms: [propext, Quot.sound]
+info: EggLean/Audit.lean:7:0: 'Egg.mean_bounds' depends on axioms: [propext, Quot.sound]
+info: EggLean/Audit.lean:8:0: 'Egg.fin201_ok' does not depend on any axioms
+info: EggLean/Audit.lean:9:0: 'Egg.networkZ2_isSome_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: EggLean/Audit.lean:10:0: 'Egg.networkZ2_none_of_all_missing' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: EggLean/Audit.lean:11:0: 'Egg.sumValid_perm' depends on axioms: [propext]
+info: EggLean/Audit.lean:12:0: 'Egg.networkZ2_perm' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: EggLean/Audit.lean:13:0: 'Egg.sumValid_perm_ids' depends on axioms: [propext, Quot.sound]
+✔ [4/5] Built EggLean (194ms)
+Build completed successfully (5 jobs).
+lake exit: 0
+--- sorry/axiom scan ---
+no sorry in Nullable.lean
