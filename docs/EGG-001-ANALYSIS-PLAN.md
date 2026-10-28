@@ -5,8 +5,12 @@ Status of this plan: written on branch `egg-001`. Be clear about timing:
 * The AWK integrity step, the Futhark kernels and R scripts `01_device`, `02_network`
   and `03_rolling` were written and run **before** this file was committed.
   Their tests and parameters below are therefore *documented*, not pre-registered.
-* Cross-device (`04`), time-series (`05`) and change-point (`06`) analyses are
-  frozen here **before** they were run on the real data.
+* Cross-device (`04`) was started before this file was written, but its results were
+  not looked at until after. Time-series (`05`) and change-point (`06`) were written
+  from the table below before they were run on the real data. In `05`, the follow-up on
+  quarters of the day for flagged series was added after the first look. It is marked post hoc.
+* The rolling-window family definition (BH over 75 tests per metric, plus all 225 together)
+  was widened after a first look at the rolling results. Both versions are reported.
 * There is no holdout date in this repository and no way to make one honestly.
   Every discovery in this experiment is exploratory. None is confirmed.
 
