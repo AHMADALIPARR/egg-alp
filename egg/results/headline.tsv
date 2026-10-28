@@ -17,3 +17,5 @@ Devices: Ljung-Box 10 lags, smallest (device 1025)	serial correlation	33.872713	
 Network Z periodogram: Fisher g	periodicity	0.0002465134	1	1	single test	null
 Network Z periodogram: highest peak (exact-binomial null sims)	periodicity	10.684142	0.64471058	0.64471058	max statistic	null
 Welch PSD: highest peak	periodicity	1.636754	0.49350649	0.49350649	max statistic, null sims	null
+Change point (CUSUM), smallest p (series 109)	26 series	1.3328428	0.058235441	0.76464217	BH over 26 (null sims keep the missing-cell mask)	null
+Change point (best single split gain), smallest p (series 1022)	26 series	13.795389	0.019245189	0.27293177	BH over 26	null

@@ -1,0 +1,2 @@
+check	n_null_series	series_with_any_changepoint	mean_changepoints	beta	c_vs_R_selftest_identical
+PELT at calibrated beta on fresh exact-binomial null network series (same |V_t| mask)	40	0	0	18.915919	TRUE

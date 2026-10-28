@@ -4,7 +4,7 @@
 #   FAIL        it ran and a check failed (exit code is then 1)
 #   UNAVAILABLE the tool is not installed, so nothing was run
 #   PENDING     the component's check script was not delivered on this branch
-# Hook convention for components owned elsewhere: egg/<dir>/check.sh -> exit 0 = PASS, 1 = FAIL, 2 = UNAVAILABLE (its last output line is shown).
+# Components owned elsewhere are called through a hook: egg/<dir>/check.sh if present, else dafny/lean `make verify`, elixir `mix test`, alp_check/horn `make check`. Exit 0 = PASS.
 # usage (from repo root): sh egg/tests/run_egg001.sh        FULL=1 also regenerates the slow R steps (about 25 min)
 cd "$(dirname "$0")/.."   # egg/
 CSV=../data/basketdata-2000-04-01.csv; SHA=63b52882582a8c7abd555f81002da6ce08c1161ec07526f422e6fdfcaf209d77
@@ -13,10 +13,12 @@ say() { printf '%-12s %-34s %s\n' "$1" "$2" "$3"; printf '%s\t%s\t%s\n' "$2" "$1
 run() { # name logfile cmd... ; PASS only on exit 0
   name=$1; lf=$2; shift 2
   if "$@" > $LOG/$lf 2>&1; then say PASS "$name" "$(tail -n 1 $LOG/$lf | cut -c1-110)"; else say FAIL "$name" "see egg/$LOG/$lf"; fi; }
-hook() { # name dir
-  if [ -x "$2/check.sh" ] || [ -f "$2/check.sh" ]; then sh "$2/check.sh" > $LOG/$1.log 2>&1; rc=$?
-    case $rc in 0) say PASS "$1" "$(tail -n 1 $LOG/$1.log | cut -c1-110)";; 2) say UNAVAILABLE "$1" "$(tail -n 1 $LOG/$1.log | cut -c1-110)";; *) say FAIL "$1" "see egg/$LOG/$1.log";; esac
-  else say PENDING "$1" "no $2/check.sh on this branch"; fi; }
+hook() { # name dir tool-check-command command...   (entry point: <dir>/check.sh if present, else the given command)
+  name=$1; dir=$2; chk=$3; shift 3
+  if [ -f "$dir/check.sh" ]; then cmd="sh check.sh"; elif [ $# -gt 0 ] && [ -d "$dir" ]; then cmd="$*"; else say PENDING "$name" "no $dir/ entry point on this branch"; return; fi
+  if ! sh -c "$chk" >/dev/null 2>&1; then say UNAVAILABLE "$name" "tool not installed here, nothing run"; return; fi
+  ( cd "$dir" && sh -c "$cmd" ) > $LOG/$name.log 2>&1; rc=$?
+  if [ $rc -eq 0 ]; then say PASS "$name" "$(grep -v '^$' $LOG/$name.log | tail -n 1 | cut -c1-110)"; else say FAIL "$name" "exit $rc, see egg/$LOG/$name.log"; fi; }
 
 # input
 got=$(sha256sum $CSV | cut -d' ' -f1); [ "$got" = "$SHA" ] && say PASS input-sha256 "$got" || say FAIL input-sha256 "got $got"
@@ -39,7 +41,10 @@ if command -v Rscript >/dev/null; then
   run parity-awk-futhark-r-octave parity.log Rscript r/08_parity.R out results
 else say UNAVAILABLE r-reference "Rscript not installed"; fi
 # Components owned elsewhere (hooks)
-hook dafny dafny; hook lean lean; hook elixir-runner elixir; hook alp-contracts alp_check
+hook dafny dafny "test -x /workspace/.tools/dafny/dafny" make verify
+hook lean lean 'test -x $HOME/.elan/bin/lake' make verify
+hook elixir-runner elixir "command -v mix" mix test
+hook alp-contracts alp_check/horn "command -v cmake" make check
 # T-SQL: syntax only
 if python3 -c "import sqlglot" 2>/dev/null; then run tsql-syntax-only tsql.log python3 tsql/check_syntax.py tsql/schema.sql; else say UNAVAILABLE tsql-syntax-only "sqlglot not installed"; fi
 # Tools not installed here: files exist but were never run
