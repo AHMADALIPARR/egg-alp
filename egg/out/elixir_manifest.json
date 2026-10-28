@@ -1,0 +1,453 @@
+{
+  "experiment": "EGG-001",
+  "fail_closed": true,
+  "mode": "exec",
+  "runner": "Egg.Runner (deterministic; no LLM, no agents, no sampling)",
+  "runtime": {
+    "elixir": "1.18.3",
+    "otp": "27"
+  },
+  "schema": "egg-001-elixir-manifest/1",
+  "stage_order": [
+    "data_integrity",
+    "awk",
+    "futhark",
+    "r",
+    "octave",
+    "parity"
+  ],
+  "stages": [
+    {
+      "checks": [
+        {
+          "detail": "sha256 matches ../data/SHA256SUMS",
+          "name": "sha256sums:../data/basketdata-2000-04-01.csv",
+          "status": "pass"
+        }
+      ],
+      "error": null,
+      "id": "data_integrity",
+      "index": 0,
+      "outputs": [
+        {
+          "bytes": 92,
+          "path": "../data/SHA256SUMS",
+          "present": true,
+          "sha256": "67dc6dcac41a646189bf1941b0ffd382154c5c300bcd8976e86f690d1d96fff7"
+        },
+        {
+          "bytes": 8880009,
+          "path": "../data/basketdata-2000-04-01.csv",
+          "present": true,
+          "sha256": "63b52882582a8c7abd555f81002da6ce08c1161ec07526f422e6fdfcaf209d77"
+        }
+      ],
+      "status": "pass"
+    },
+    {
+      "checks": [
+        {
+          "detail": "fresh awk run byte-identical",
+          "name": "awk_rederive:results/awk_device.tsv",
+          "status": "pass"
+        },
+        {
+          "detail": "fresh awk run byte-identical",
+          "name": "awk_rederive:results/awk_hist.tsv",
+          "status": "pass"
+        },
+        {
+          "detail": "fresh awk run byte-identical",
+          "name": "awk_rederive:results/awk_integrity.tsv",
+          "status": "pass"
+        },
+        {
+          "detail": "fresh awk run byte-identical",
+          "name": "awk_rederive:results/awk_rowvalid.tsv",
+          "status": "pass"
+        },
+        {
+          "detail": "fresh awk run byte-identical",
+          "name": "awk_rederive:out/dense.tsv",
+          "status": "pass"
+        },
+        {
+          "detail": "33 PASS, 0 FAIL, 43 rows",
+          "name": "tsv_no_fail:results/awk_integrity.tsv",
+          "status": "pass"
+        },
+        {
+          "detail": "86401 lines",
+          "name": "min_lines:out/dense.tsv>=86000",
+          "status": "pass"
+        }
+      ],
+      "error": null,
+      "id": "awk",
+      "index": 1,
+      "outputs": [
+        {
+          "bytes": 8447562,
+          "path": "out/dense.tsv",
+          "present": true,
+          "sha256": "c9f7b1153b4697b5416987ce09a8f8741cdcc876f99805413f407c247f90ef2d"
+        },
+        {
+          "bytes": 1724,
+          "path": "results/awk_device.tsv",
+          "present": true,
+          "sha256": "b31fa7926258d6dc4a9ba1400340c29214185896f3fb11767d9505c793300367"
+        },
+        {
+          "bytes": 13702,
+          "path": "results/awk_hist.tsv",
+          "present": true,
+          "sha256": "6ddab59d78102a00ceac8cd2f4fec5cacc66001b070f6226ef12394308236eee"
+        },
+        {
+          "bytes": 1240,
+          "path": "results/awk_integrity.tsv",
+          "present": true,
+          "sha256": "648c3776eca37cbbcda3a592f8170b7bfc8afb67bddbf9c4ba533161b38a0b13"
+        },
+        {
+          "bytes": 152,
+          "path": "results/awk_rowvalid.tsv",
+          "present": true,
+          "sha256": "8bdb2b4aa118f6aca45a615fe48c8f6f39edc014561517cc645eec86b61457bc"
+        }
+      ],
+      "status": "pass"
+    },
+    {
+      "checks": [
+        {
+          "detail": "exit 0, 6 PASS, 0 FAIL",
+          "name": "futhark_sentinel.sh",
+          "status": "pass"
+        },
+        {
+          "detail": "26 lines",
+          "name": "min_lines:out/fut/device_moments.tsv>=26",
+          "status": "pass"
+        }
+      ],
+      "error": null,
+      "id": "futhark",
+      "index": 2,
+      "outputs": [
+        {
+          "bytes": 11528,
+          "path": "out/fut/corr.tsv",
+          "present": true,
+          "sha256": "edfab85818fd233e18b4cff854238957a3f1c53eb92c3e98f71ae05231614d4e"
+        },
+        {
+          "bytes": 11553,
+          "path": "out/fut/cov.tsv",
+          "present": true,
+          "sha256": "377ffb7808be5e558f55c87bf76990d772557282fab43463ef5c0ec8b815adcc"
+        },
+        {
+          "bytes": 1594,
+          "path": "out/fut/device_moments.tsv",
+          "present": true,
+          "sha256": "20f37ecc2357a335f8ba85361fcbab132e3634b5f61be078ced2ce61ac410b59"
+        },
+        {
+          "bytes": 1857411,
+          "path": "out/fut/network_z.tsv",
+          "present": true,
+          "sha256": "b172e3ef21f8ccea912bc8a3f1c11f1974d04f4c21356e0204ef571fb0332379"
+        },
+        {
+          "bytes": 3153411,
+          "path": "out/fut/network_z_calibrated.tsv",
+          "present": true,
+          "sha256": "117acb0a06650d30457e6fa966648684c6fd72b8b5a5432cce1716ac2bfcf2d3"
+        },
+        {
+          "bytes": 1123,
+          "path": "out/fut/simnull_device.tsv",
+          "present": true,
+          "sha256": "b6453147cda2530fb285c93c99ad2f0c7a4288677186952aed9b5483a5c19fc6"
+        },
+        {
+          "bytes": 48,
+          "path": "out/fut/simnull_z.tsv",
+          "present": true,
+          "sha256": "63013e530ba88356d19f34aea378b39b610907f6dddc848b42a91029f90209bc"
+        }
+      ],
+      "status": "pass"
+    },
+    {
+      "checks": [
+        {
+          "detail": "26 lines",
+          "name": "min_lines:results/r_device_summary.tsv>=26",
+          "status": "pass"
+        }
+      ],
+      "error": null,
+      "id": "r",
+      "index": 3,
+      "outputs": [
+        {
+          "bytes": 231,
+          "path": "results/r_acf_followup_quarters.tsv",
+          "present": true,
+          "sha256": "4cf0c0da5438d7d7faf49292c84724026ae894016729ed324b6cdccc3e36a353"
+        },
+        {
+          "bytes": 2618,
+          "path": "results/r_acf_network.tsv",
+          "present": true,
+          "sha256": "9630fab633c5fb156b9db81251cb1c9b9e97d7696b10a136c020c7ab23efdbd4"
+        },
+        {
+          "bytes": 3356,
+          "path": "results/r_acf_summary.tsv",
+          "present": true,
+          "sha256": "7b40f17dfb3962e89e75461ce2aa0d75fdc2360d1d12e7fe2668022e5342f68a"
+        },
+        {
+          "bytes": 4823,
+          "path": "results/r_binomial_pmf.tsv",
+          "present": true,
+          "sha256": "d8ec5a04d63f3147dc181e8ae92cf1e0c3c57fd31199a4616ef422cd3b897b06"
+        },
+        {
+          "bytes": 9443,
+          "path": "results/r_corr_matrix.tsv",
+          "present": true,
+          "sha256": "4c44c95e23c21a9adcf815e1d01c100d8abb8ace96e7287236fe9393e9b8cbe2"
+        },
+        {
+          "bytes": 131,
+          "path": "results/r_crossdev_bootstrap_ci.tsv",
+          "present": true,
+          "sha256": "31a4b0d06b968bb21fa5816a2643b85303b3054843771ac80ce7b4105df1eb0e"
+        },
+        {
+          "bytes": 238,
+          "path": "results/r_crossdev_global.tsv",
+          "present": true,
+          "sha256": "227aeb82785d2d3e9d5820f00fb15d5fe631ab7d9a16a7f2a66b3eed5d4ce0a3"
+        },
+        {
+          "bytes": 147,
+          "path": "results/r_crossdev_lag_global.tsv",
+          "present": true,
+          "sha256": "d517c10f4e7a64107bacd14ca0b67bca0a30b754979da6d69c023deb19c5af7f"
+        },
+        {
+          "bytes": 3000,
+          "path": "results/r_crossdev_lag_profile.tsv",
+          "present": true,
+          "sha256": "54ebb2e2ece330e66b5b48325b135065c9c9e5c92f791497713ec743a2547c41"
+        },
+        {
+          "bytes": 301,
+          "path": "results/r_crossdev_tail_global.tsv",
+          "present": true,
+          "sha256": "1527f929afe2dcffc663224ee438f370c69801752871369a6c618ed62fb39e0c"
+        },
+        {
+          "bytes": 3695,
+          "path": "results/r_device_quantiles.tsv",
+          "present": true,
+          "sha256": "5c0fb0217538c43572417c345508129f8465cb9a5d40ec550e2ae662c6ff1911"
+        },
+        {
+          "bytes": 9780,
+          "path": "results/r_device_summary.tsv",
+          "present": true,
+          "sha256": "40449d58fa0704098cd13b6377346df8a84bb242a416cbd6a264a2a143fb373d"
+        },
+        {
+          "bytes": 3208,
+          "path": "results/r_device_tails.tsv",
+          "present": true,
+          "sha256": "6f49e6fd85e7259e3fa8daa86575f2fe775e3e0d3e1667a823d521a336ec8e66"
+        },
+        {
+          "bytes": 55237,
+          "path": "results/r_network_z_minute.tsv",
+          "present": true,
+          "sha256": "425ccf833f744d6abc63f7598c958bcc10228293163b1af214d493aaaa099c98"
+        },
+        {
+          "bytes": 842,
+          "path": "results/r_network_z_summary.tsv",
+          "present": true,
+          "sha256": "5da8a03a7d96a742cce259fbc841e0b3667b4ae492bfd249571f4b79191acdf4"
+        },
+        {
+          "bytes": 32678,
+          "path": "results/r_pair_crossdev.tsv",
+          "present": true,
+          "sha256": "98afe69aa56ffb543b70cd42b056989320dfc07c5a48916eedb5967535a3f53a"
+        },
+        {
+          "bytes": 318,
+          "path": "results/r_periodogram_not_analysed.tsv",
+          "present": true,
+          "sha256": "7f321ade65c8ee6d3d1ec70a56c0bbf248a9775278c8ae0d12a44f727b2bb1b6"
+        },
+        {
+          "bytes": 722,
+          "path": "results/r_periodogram_peaks.tsv",
+          "present": true,
+          "sha256": "0463e1f7c16559b76eba5e5e59a68d030303675b1eed82bf6f0b7981354a34b5"
+        },
+        {
+          "bytes": 2038,
+          "path": "results/r_periodogram_summary.tsv",
+          "present": true,
+          "sha256": "b0b70ce5bd02e740a492dd937cdd4d7e0a1853a3fa046b85ad0c3e228d6b0742"
+        },
+        {
+          "bytes": 4599,
+          "path": "results/r_pooled_counts.tsv",
+          "present": true,
+          "sha256": "979c5cbb438797e523a4c4b51573c2ea8ef19de8008a093de0ebe1ee561ba6ae"
+        },
+        {
+          "bytes": 209,
+          "path": "results/r_pooled_gof.tsv",
+          "present": true,
+          "sha256": "a433bcfb162f013bdece460da4efc6f975f8e5142fe7643ba59304fd4553d84f"
+        },
+        {
+          "bytes": 12742,
+          "path": "results/r_rolling_device.tsv",
+          "present": true,
+          "sha256": "70071dabd73b3554120aff7da4cc0930a26d00b506775ea94595090375989db6"
+        },
+        {
+          "bytes": 1006,
+          "path": "results/r_rolling_global.tsv",
+          "present": true,
+          "sha256": "9a31a7b9ff02fd002e810a31ccded26b370c3f8d71f9bf59fa0e33ce3198ba26"
+        },
+        {
+          "bytes": 966,
+          "path": "results/r_rolling_network.tsv",
+          "present": true,
+          "sha256": "a5f0b869c34d782548b38d0f5c6ba4cd58025d94d0b6d54c2d3104ea28470d65"
+        },
+        {
+          "bytes": 124794,
+          "path": "results/r_rolling_network_series.tsv",
+          "present": true,
+          "sha256": "9ac64c9d0f9c8588ada4151276d0f42e3321c5240398b46666d31d7401ab8981"
+        },
+        {
+          "bytes": 259,
+          "path": "results/r_welch_peaks.tsv",
+          "present": true,
+          "sha256": "9cba4230d94236bddc1ebedceb72b4f3f5f1cd5a3ebfdec9553464f92ff8a954"
+        },
+        {
+          "bytes": 44007,
+          "path": "results/r_welch_psd.tsv",
+          "present": true,
+          "sha256": "9a2397876eb8b7307603d14bd701b741e7805556746fa165d0ff090925f56211"
+        },
+        {
+          "bytes": 157,
+          "path": "results/r_welch_summary.tsv",
+          "present": true,
+          "sha256": "4912ec8751ea04b2c4c020cd42fb9a683de2e3868256258c6eb87932beb5f660"
+        }
+      ],
+      "status": "pass"
+    },
+    {
+      "checks": [
+        {
+          "detail": "25 lines",
+          "name": "min_lines:out/oct/oct_device_moments.tsv>=2",
+          "status": "pass"
+        }
+      ],
+      "error": null,
+      "id": "octave",
+      "index": 4,
+      "outputs": [
+        {
+          "bytes": 1067,
+          "path": "out/oct/oct_acf_network.tsv",
+          "present": true,
+          "sha256": "f07bb0d2ec411b7983daf0ae4be4e2e56d1dc22e5207c3409b18a146fefe0cdf"
+        },
+        {
+          "bytes": 368,
+          "path": "out/oct/oct_corr5.tsv",
+          "present": true,
+          "sha256": "af92a09edd62d1fa05a45f4872c4df0113b81b649dcc8fa1a1560c7cd5823b31"
+        },
+        {
+          "bytes": 846,
+          "path": "out/oct/oct_device_moments.tsv",
+          "present": true,
+          "sha256": "5623e779d0ae2b7024f532efa21c3630ce37683c972360f48f53b045b4506222"
+        },
+        {
+          "bytes": 28162,
+          "path": "out/oct/oct_network_z_head.tsv",
+          "present": true,
+          "sha256": "39ad1177f1a196627f528e2ab8d5156ec80cd52f580c9b8f2091bd137cc8896f"
+        },
+        {
+          "bytes": 43,
+          "path": "out/oct/oct_network_z_summary.tsv",
+          "present": true,
+          "sha256": "29964bed2c84ecadbfa16bf6d9818f47d1c766b4c747e3089544a37f8ca7e719"
+        },
+        {
+          "bytes": 33,
+          "path": "out/oct/oct_periodogram.tsv",
+          "present": true,
+          "sha256": "9bc39dc2c048171c355bf738cd6ecea2db043146eb39373f0acdbb64c352fbd0"
+        },
+        {
+          "bytes": 19983,
+          "path": "out/oct/oct_roll60_dev1_var.tsv",
+          "present": true,
+          "sha256": "197a246fc9eec4fc4681f1cc27ce8a8a036d1c8cf066f97d44e5cf14549ec868"
+        },
+        {
+          "bytes": 58150,
+          "path": "out/oct/oct_welch.tsv",
+          "present": true,
+          "sha256": "0adc6eb77b5f1a3ab13cd56318436688ce75a57a0ca9a16198ff162b9d345da4"
+        }
+      ],
+      "status": "pass"
+    },
+    {
+      "checks": [
+        {
+          "detail": "34 PASS, 0 FAIL, 34 rows",
+          "name": "tsv_no_fail:results/parity.tsv",
+          "status": "pass"
+        }
+      ],
+      "error": null,
+      "id": "parity",
+      "index": 5,
+      "outputs": [
+        {
+          "bytes": 2424,
+          "path": "results/parity.tsv",
+          "present": true,
+          "sha256": "186445a750bcb7f4e02a4d30f8c82964799a6a935a9658107ed4e9a320b29bfc"
+        }
+      ],
+      "status": "pass"
+    }
+  ],
+  "status": "pass"
+}
