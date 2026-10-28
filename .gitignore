@@ -9,3 +9,5 @@ egg/**/deps/
 egg/lean/.lake/
 *.beam
 node_modules/
+*.o
+*.so

@@ -1,0 +1,19 @@
+test	family	statistic	p_raw	p_corrected	correction	verdict
+Pooled Pearson GOF vs Binomial(200,.5)	device GOF	66.471953	0.39184135	0.39184135	single test	null
+Pooled likelihood-ratio GOF	device GOF	66.358669	0.39559628	0.39559628	single test	null
+Per-device pearson GOF, smallest p (device 1025)	25 devices	64.613245	0.15283981	1	Holm over 25	null
+Per-device lr GOF, smallest p (device 111)	25 devices	66.939238	0.11112129	1	Holm over 25	null
+Per-device mean vs 100, smallest p (device 1022)	25 devices	-1.7893047	0.073565756	1	Holm over 25	null
+Per-device variance vs 50, smallest p (device 1000)	25 devices	85166.788	0.0035389749	0.088474372	Holm over 25	null
+Network Z: variance of Z (expect 1)	network Z	1.0032806	NA	NA	estimate with block-bootstrap CI only	n/a
+Network Z: seconds with |Z| >= 3 (observed vs exact expected)	network Z	245	0.23191404	0.23191404	single test	null
+Network Z: most extreme second	network Z	NA	1.8640821e-06	0.16105669	Bonferroni over 86400 s	null
+Rolling entropy/mean/variance per device, smallest corrected p	225 rolling tests	NA	0.00026199719	0.058163377	BH over all rolling tests	null
+Cross-device: largest |r|	cross-device	0.0091677213	0.9030969	0.9030969	permutation, max statistic	null
+Cross-device: lagged cross-correlation, any pair, lag +/-60 s	cross-device	4.0343096	0.85762847	0.85762847	permutation, max over pairs and lags	null
+Cross-device: variance ratio of devices-in-tail per second	cross-device	0.99311128	0.13986014	0.13986014	single test	null
+Network Z: Ljung-Box, 10 lags	serial correlation	16.058016	0.097983613	0.53691798	BH over 52 tests	null
+Devices: Ljung-Box 10 lags, smallest (device 1025)	serial correlation	33.872713	0.00019409405	0.01009289	BH over 52 tests	survives correction (exploratory)
+Network Z periodogram: Fisher g	periodicity	0.0002465134	1	1	single test	null
+Network Z periodogram: highest peak (exact-binomial null sims)	periodicity	10.684142	0.64471058	0.64471058	max statistic	null
+Welch PSD: highest peak	periodicity	1.636754	0.49350649	0.49350649	max statistic, null sims	null
